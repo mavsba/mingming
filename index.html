@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>抽奖</title>
+    <style type="text/css">
+      .qimo8 {
+        overflow: hidden;
+      }
+      .qimo8 .qimo {
+        /*width:99999999px;*/
+        width: 8000%;
+      }
+      .qimo8 .qimo div {
+        float: left;
+      }
+      .qimo8 .qimo ul {
+        float: left;
+        overflow: hidden;
+        zoom: 1;
+      }
+      .qimo8 .qimo ul li {
+        float: left;
+        list-style: none;
+        font-size: 24px;
+        margin: 0 1rem;
+      }
+    </style>
+    <link rel="stylesheet" type="text/css" href="./css/styleCJ.css" />
+    <script src="JS/common.js"></script>
+  </head>
+  <body>
+    <div class="shanDeng" id="deng">
+      <div id="luck">
+        <!-- luck -->
+        <table style="border-spacing:.08rem .03rem;">
+          <tr>
+            <td class="luck-unit luck-unit-0"><img src="./img/04.png" /></td>
+            <td class="luck-unit luck-unit-1"><img src="./img/04.png" /></td>
+            <td class="luck-unit luck-unit-2"><img src="./img/04.png" /></td>
+          </tr>
+          <tr>
+            <td class="luck-unit luck-unit-7"><img src="./img/05.png" /></td>
+            <td class="cjBtn" id="btn"></td>
+            <td class="luck-unit luck-unit-3">
+              <img
+                style="width:200px;height:118px"
+                src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1581691108132&di=f0d3588c6caddf609451331028c36b56&imgtype=0&src=http%3A%2F%2Fimg.mp.sohu.com%2Fq_mini%2Cc_zoom%2Cw_640%2Fupload%2F20170708%2F935ef75db15d400993b010b7440b0f06_th.jpg"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td class="luck-unit luck-unit-6"><img src="./img/04.png" /></td>
+            <td class="luck-unit luck-unit-5"><img src="./img/04.png" /></td>
+            <td class="luck-unit luck-unit-4"><img src="./img/04.png" /></td>
+          </tr>
+        </table>
+      </div>
+      <!-- luckEnd -->
+    </div>
+
+    <div class="rule">
+      <p>抽奖活动规则</p>
+      <p>1、新用户第一次抽奖免费;</p>
+      <p>2、如想再次抽奖请联系管理员：王仙琦。注明：20元一次、最多可抽5次;</p>
+      <p>3、本次抽奖最终解释权归王仙琦所有</p>
+    </div>
+
+    <div class="play">
+      <span></span>
+      <div class="div">
+        <div id="demo" class="qimo8">
+          <div class="qimo">
+            <div id="demo1">
+              <ul>
+                <li>王仙琦获得一等奖</li>
+                <li>王仙琦获得一等奖</li>
+                <li>刘充获得四等奖</li>
+                <li>王仙琦获得一等奖</li>
+                <li>刘充获得四等奖</li>
+                <li>王仙琦获得一等奖</li>
+                <li>刘充获得四等奖</li>
+                <li>王仙琦获得一等奖</li>
+                <li>刘充获得四等奖</li>
+              </ul>
+            </div>
+            <div id="demo2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+    <script src="./js/toastr.js"></script>
+
+    <script>
+      toastr.options = {
+        closeButton: false, // 是否显示关闭按钮，（提示框右上角关闭按钮）
+        debug: false, // 是否使用deBug模式
+        // progressBar: true,                                            // 是否显示进度条，（设置关闭的超时时间进度条）
+        positionClass: "toast-bottom-center", // 设置提示款显示的位置
+        onclick: null, // 点击消息框自定义事件
+        showDuration: "300", // 显示动画的时间
+        hideDuration: "1000", //  消失的动画时间
+        timeOut: "2000", //  自动关闭超时时间
+        extendedTimeOut: "1000", //  加长展示时间
+        // showEasing: "swing",                                     //  显示时的动画缓冲方式
+        hideEasing: "linear", //   消失时的动画缓冲方式
+        showMethod: "fadeIn", //   显示时的动画方式
+        hideMethod: "fadeOut" //   消失时的动画方式
+      };
+
+      var luck = {
+        index: 0, //当前转动到哪个位置，起点位置
+        count: 0, //总共有多少个位置
+        timer: 0, //setTimeout的ID，用clearTimeout清除
+        speed: 20, //初始转动速度
+        times: 0, //转动次数
+        cycle: 50, //转动基本次数：即至少需要转动多少次再进入抽奖环节
+        prize: -1, //中奖位置
+        init: function(id) {
+          if ($("#" + id).find(".luck-unit").length > 0) {
+            $luck = $("#" + id);
+            $units = $luck.find(".luck-unit");
+            this.obj = $luck;
+            this.count = $units.length;
+            $luck.find(".luck-unit-" + this.index).addClass("active");
+          }
+        },
+
+        roll: function() {
+          var index = this.index;
+          var count = this.count;
+          var luck = this.obj;
+          $(luck)
+            .find(".luck-unit-" + index)
+            .removeClass("active");
+          index += 1;
+          if (index > count - 1) {
+            index = 0;
+          }
+          $(luck)
+            .find(".luck-unit-" + index)
+            .addClass("active");
+          this.index = index;
+          return false;
+        },
+        stop: function(index) {
+          this.prize = index;
+          return false;
+        }
+      };
+
+      function roll() {
+        luck.times += 1;
+        luck.roll();
+        if (luck.times > luck.cycle + 10 && luck.prize == luck.index) {
+          clearTimeout(luck.timer);
+          luck.prize = -1;
+          luck.times = 0;
+          click = false;
+        } else {
+          if (luck.times < luck.cycle) {
+            luck.speed -= 10;
+          } else if (luck.times == luck.cycle) {
+            var index = (Math.random() * luck.count) | 0;
+            if (index > 5) {
+              index = 7;
+            } else {
+              index = 5;
+            }
+            luck.prize = index; //最终中奖位置
+          } else {
+            if (
+              luck.times > luck.cycle + 10 &&
+              ((luck.prize == 0 && luck.index == 7) ||
+                luck.prize == luck.index + 1)
+            ) {
+              luck.speed += 110;
+            } else {
+              luck.speed += 20;
+            }
+          }
+          if (luck.speed < 40) {
+            luck.speed = 40;
+          }
+
+          luck.timer = setTimeout(roll, luck.speed);
+        }
+        return false;
+      }
+
+      var click = false;
+      window.onload = function() {
+        luck.init("luck");
+        $("#btn").click(function() {
+          /*//按下弹起效果
+				$("#btn").addClass("cjBtnDom");
+				setTimeout(function(){	
+					$("#btn").removeClass("cjBtnDom");
+				},200);*/
+
+          if (click) {
+            return false;
+          } else {
+            if (JSON.parse(window.localStorage.getItem("isOver"))) {
+              toastr.warning(
+                "别太贪了！你已经抽过了，你那点小心思我再不懂？没看到下面写着新用户只能免费抽一次么？你重新刷新也没用！哈哈哈"
+              );
+            } else {
+              window.localStorage.setItem("isOver", JSON.stringify(true));
+              luck.speed = 100;
+              roll();
+              click = true;
+              return false;
+            }
+          }
+        });
+      };
+      //播报
+      var demo = document.getElementById("demo");
+      var demo1 = document.getElementById("demo1");
+      var demo2 = document.getElementById("demo2");
+      demo2.innerHTML = document.getElementById("demo1").innerHTML;
+      function Marquee() {
+        if (demo.scrollLeft - demo2.offsetWidth >= 0) {
+          demo.scrollLeft -= demo1.offsetWidth;
+        } else {
+          demo.scrollLeft++;
+        }
+      }
+      setInterval(Marquee, 10);
+    </script>
+  </body>
+</html>
