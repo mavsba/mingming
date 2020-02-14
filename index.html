@@ -117,7 +117,7 @@
         timer: 0, //setTimeout的ID，用clearTimeout清除
         speed: 20, //初始转动速度
         times: 0, //转动次数
-        cycle: 50, //转动基本次数：即至少需要转动多少次再进入抽奖环节
+        cycle: 100, //转动基本次数：即至少需要转动多少次再进入抽奖环节
         prize: -1, //中奖位置
         init: function(id) {
           if ($("#" + id).find(".luck-unit").length > 0) {
@@ -205,7 +205,7 @@
             return false;
           } else {
             if (JSON.parse(window.localStorage.getItem("isOver"))) {
-              toastr.warning(
+              alert(
                 "别太贪了！你已经抽过了，你那点小心思我再不懂？没看到下面写着新用户只能免费抽一次么？你重新刷新也没用！哈哈哈"
               );
             } else {
